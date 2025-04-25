@@ -66,11 +66,36 @@ app.post("/send-notification", async (req, res) => {
   }
 
   try {
+    // const message = {
+    //   tokens,
+    //   data: data || {},
+    //   android: {
+    //     priority: "high",
+    //   },
+    //   apns: {
+    //     headers: {
+    //       "apns-priority": "10",
+    //     },
+    //     payload: {
+    //       aps: {
+    //         "content-available": 1,
+    //       },
+    //     },
+    //   },
+    // };
     const message = {
       tokens,
+      notification: {
+        title: data?.title || "Incoming Call",
+        body: data?.message || "Someone is calling you",
+      },
       data: data || {},
       android: {
         priority: "high",
+        notification: {
+          sound: "ringtone", // Custom sound
+          channelId: "incoming_call", // Custom channel needed on client
+        },
       },
       apns: {
         headers: {
@@ -78,6 +103,11 @@ app.post("/send-notification", async (req, res) => {
         },
         payload: {
           aps: {
+            alert: {
+              title: data?.title || "Incoming Call",
+              body: data?.message || "Someone is calling you",
+            },
+            sound: "ringtone.caf", // Use your uploaded sound
             "content-available": 1,
           },
         },
