@@ -85,10 +85,10 @@ app.post("/send-notification", async (req, res) => {
     // };
     const message = {
       tokens,
-      notification: {
-        title: data?.title || "Incoming Call",
-        body: data?.message || "Someone is calling you",
-      },
+      // notification: {
+      //   title: data?.title || "Incoming Call",
+      //   body: data?.message || "Someone is calling you",
+      // },
       data: data || {},
       android: {
         priority: "high",
