@@ -64,30 +64,21 @@ app.post("/send-notification", async (req, res) => {
   if (!tokens || !Array.isArray(tokens) || tokens.length === 0) {
     return res.status(400).json({ error: "No tokens provided" });
   }
+  const GetUerinfo = (
+    await admin
+      .firestore()
+      .collection("users")
+      .where("tokens", "in", tokens)
+      .get()
+  ).docs.map((doc) => doc.data());
 
   try {
-    // const message = {
-    //   tokens,
-    //   data: data || {},
-    //   android: {
-    //     priority: "high",
-    //   },
-    //   apns: {
-    //     headers: {
-    //       "apns-priority": "10",
-    //     },
-    //     payload: {
-    //       aps: {
-    //         "content-available": 1,
-    //       },
-    //     },
-    //   },
-    // };
     const message = {
       tokens,
       notification: {
-        title: data?.title || "Incoming Call",
-        body: data?.message || "Someone is calling you",
+        title: GetUerinfo[0].name || "Incoming Call",
+        body: data?.message || "Please Come ! Need your help",
+        imageUrl: data?.imageUrl,
       },
       data: data || {},
       android: {
@@ -104,7 +95,7 @@ app.post("/send-notification", async (req, res) => {
         payload: {
           aps: {
             alert: {
-              title: data?.title || "Incoming Call",
+              title: GetUerinfo[0].name || "Incoming Call",
               body: data?.message || "Someone is calling you",
             },
             sound: "ringtone.caf", // Use your uploaded sound
